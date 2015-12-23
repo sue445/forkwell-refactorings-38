@@ -6,18 +6,8 @@ class RequestToAnalyticsService
     account           = Account.find(data[:account_id])
     analytics_client  = Analytics::Client.new(Settings.analytics_api_key)
 
-    account_attributes = {
-      account_id:         account.id,
-      account_name:       account.name,
-      account_user_count: account.users.count
-    }
-
     account.users.each do |user|
-      analytics_client.request({
-        type:  data[:type],
-        id:    user.id,
-        email: user.email
-      }.merge(account_attributes))
+      user.request_analytics(account: account, analytics_client: analytics_client, type: data[:type])
     end
   rescue => e
     raise ConnectionFailureException, e.message
@@ -49,6 +39,17 @@ class User
   def initialize(id, email)
     @id = id
     @email = email
+  end
+
+  def request_analytics(account:, analytics_client:, type:)
+    analytics_client.request(
+      account_id:         account.id,
+      account_name:       account.name,
+      account_user_count: account.users.count,
+      type:               type,
+      id:                 id,
+      email:              email,
+    )
   end
 end
 
