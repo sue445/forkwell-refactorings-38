@@ -20,7 +20,7 @@ class RequestToAnalyticsService
       }.merge(account_attributes))
     end
   rescue => e
-    raise ConnectionFailureException.new(e.message)
+    raise ConnectionFailureException, e.message
   end
 end
 
