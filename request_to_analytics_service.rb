@@ -1,7 +1,7 @@
 class RequestToAnalyticsService
   def perform(data)
-    account           = Account.find(data[:account_id)
-    analytics_client  = Analytics::Client.new(Settings.analytics_api_key])
+    account           = Account.find(data[:account_id])
+    analytics_client  = Analytics::Client.new(Settings.analytics_api_key)
 
     account_attributes = {
       account_id:         account.id,
@@ -16,7 +16,7 @@ class RequestToAnalyticsService
         email: user.email
       }.merge(account_attributes))
     end
-  rescue e
+  rescue => e
     raise ConnectionFailureException.new(e.message)
   end
 end
